@@ -3,6 +3,10 @@
                    Modules and Abstract Data Types
  *)
 
+(*
+                               SOLUTION
+ *)
+
 (* Objective: This lab practices concepts of modules, including files
 as modules, signatures, and polymorphic abstract data types.
 
@@ -66,7 +70,9 @@ module Stack : STACK =
   struct
     exception EmptyStack
 
-    type 'a stack = 'a list
+    type 'a stack = 'a list (* We've chosen to implement stacks
+                               internally as lists, a natural
+                               and simple choice *)
 
     (* empty -- An empty stack *)
     let empty : 'a stack = []
@@ -76,11 +82,10 @@ module Stack : STACK =
 
     (* pop_helper s -- Returns a pair of the top element of the
        stack and a stack containing the remaining elements *)
-    let pop_helper (s : 'a stack) : 'a * 'a stack = 
+    let pop_helper (s : 'a stack) : 'a * 'a stack =
       match s with
       | [] -> raise EmptyStack
       | h :: t -> (h, t)
-
 
     (* top s -- Returns the value of the topmost element on stack s,
        raising the EmptyStack exception if there is no element to be
@@ -101,14 +106,21 @@ argument and uses your Stack module to return a new stack with the
 following strings pushed in order: `"Computer"`, `"Science"`, `"51"`.
 ......................................................................*)
 
-let sample_stack () : string Stack.stack = Stack.empty
-                                           |> Stack.push "Computer"
-                                           |> Stack.push "Science"
-                                           |> Stack.push "51" ;;
+let sample_stack () =
+  let open Stack in
+  empty
+  |> push "Computer"
+  |> push "Science"
+  |> push "51" ;;
+
+(* Notice that even though our implementation of stacks implements
+   them as lists, you can't perform list operations (like `List.rev)
+   on them. The abstraction barrier that module signatures enforce
+   make that impossible. *)
+
 (*......................................................................
 Exercise 4C: Write an expression to generate a stack with the
 `sample_stack` function above and name the top element `top_el`.
 ......................................................................*)
 
-let top_el : string =
-  Stack.top (sample_stack ()) ;;
+let top_el : string = Stack.top (sample_stack ()) ;;

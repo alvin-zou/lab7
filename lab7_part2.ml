@@ -3,6 +3,10 @@
                    Modules and Abstract Data Types
  *)
 
+(*
+                               SOLUTION
+ *)
+
 (* Objective: This lab practices concepts of modules, including files
 as modules, signatures, and polymorphic abstract data types.
 
@@ -83,61 +87,90 @@ expression that extracts the red channel of the color named Red,
 thereby naming the result `red_channel`.
 ......................................................................*)
 
-let red_channel : int = Color.red (Color.color_named Color.Red) ;;
-
-(* Let's investigate one way that a signature can be useful. Although
-color.ml contains an implementation of a basic color module, the
-implementation is unintuitive and obscure -- truly horrid in fact. (We
-did that on purpose.) You will want to change the implementation of
-color.ml, rewriting it wholesale. At the same time, you'll want to
-guarantee to users of the module (like this file itself!) that the
-functionality stays the same; the way to do this is through module
-signatures.
-
-......................................................................
-Exercise 2B: Add a file color.mli, in which you define an appropriate
-signature for the Color module. Consider which types and values you
-want revealed to the user and which you would prefer to be hidden.
-
-Once you have color.mli implemented, you should still be able to
-compile color.ml and run color.byte.
-......................................................................*)
-
-
-(*......................................................................
-Exercise 2C:
-
-In the file color.ml, modify the implementation of a color module as
-you see fit. Make the design choices that you think would be best for
-a color module implementation. In particular, you should be able to
-come up with a solution that is **much** clearer and more transparent
-than the one currently in color.ml.
-
-To pass the unit tests, you'll want the RGB values for the colors in
-the color_name type to have the following values:
-
-     R  |  G  |  B  | Color
-    ----|-----|-----|--------
-    255 |   0 |   0 | Red
-      0 | 255 |   0 | Green
-      0 |  0  | 255 | Blue
-    255 | 165 |   0 | Orange
-    255 | 255 |   0 | Yellow
-     75 |   0 | 130 | Indigo
-    240 | 130 | 240 | Violet
-
-......................................................................*)
-
-
-(* Here's the payoff: A user who uses the color module, by virtue of
-having to stay within the color.mli interface, will not notice **any
-difference at all** between the two implementations in color.ml. The
-underlying implementation can be changed any time in any way, so long
-as the functionality provided stays consistent with the signature.
-
-For instance, consider the List module that you are familiar with by
-now.  You never needed to worry about how the List module was
-implemented in order to use it, you only needed to understand the
-interface.
-
-Compartmentalization ftw! *)
+let red_channel : int =
+    Color.red (Color.color_named Color.Red) ;;
+  
+  (* or if you prefer *)
+  
+  let red_channel : int =
+    let open Color in
+    red (color_named Red) ;;
+  
+  (* Let's investigate one way that a signature can be useful. Although
+  color.ml contains an implementation of a basic color module, the
+  implementation is unintuitive and obscure -- truly horrid in fact. (We
+  did that on purpose.) You will want to change the implementation of
+  color.ml, rewriting it wholesale. At the same time, you'll want to
+  guarantee to users of the module (like this file itself!) that the
+  functionality stays the same; the way to do this is through module
+  signatures.
+  
+  ......................................................................
+  Exercise 2B: Add a file color.mli, in which you define an appropriate
+  signature for the Color module. Consider which types and values you
+  want revealed to the user and which you would prefer to be hidden.
+  
+  Once you have color.mli implemented, you should still be able to
+  compile color.ml and run color.byte.
+  ......................................................................*)
+  
+  (* The module type for the Color module captures the interface we want
+  our color modules to obey. Your color.mli file should have the
+  following types and values declared. If you have trouble getting this
+  to work, you can find our solution in color.mli.
+  
+      type color ;;
+      type color_name =
+        | Red
+        | Green
+        | Blue
+        | Orange
+        | Yellow
+        | Indigo
+        | Violet ;;
+      val to_color : int -> int -> int -> color ;;
+      val red : color -> int ;;
+      val green: color -> int ;;
+      val blue: color -> int ;;
+      val color_named: color_name -> color ;;
+   *)
+  
+  (*......................................................................
+  Exercise 2C:
+  
+  In the file color.ml, modify the implementation of a color module as
+  you see fit. Make the design choices that you think would be best for
+  a color module implementation. In particular, you should be able to
+  come up with a solution that is **much** clearer and more transparent
+  than the one currently in color.ml.
+  
+  To pass the unit tests, you'll want the RGB values for the colors in
+  the color_name type to have the following values:
+  
+       R  |  G  |  B  | Color
+      ----|-----|-----|--------
+      255 |   0 |   0 | Red
+        0 | 255 |   0 | Green
+        0 |  0  | 255 | Blue
+      255 | 165 |   0 | Orange
+      255 | 255 |   0 | Yellow
+       75 |   0 | 130 | Indigo
+      240 | 130 | 240 | Violet
+  
+  ......................................................................*)
+  
+  (* See the solution in color.ml *)
+  
+  (* Here's the payoff: A user who uses the color module, by virtue of
+  having to stay within the color.mli interface, will not notice **any
+  difference at all** between the two implementations in color.ml. The
+  underlying implementation can be changed any time in any way, so long
+  as the functionality provided stays consistent with the signature.
+  
+  For instance, consider the List module that you are familiar with by
+  now.  You never needed to worry about how the List module was
+  implemented in order to use it, you only needed to understand the
+  interface.
+  
+  Compartmentalization ftw! *)
+  

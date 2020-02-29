@@ -3,6 +3,10 @@
                    Modules and Abstract Data Types
  *)
 
+(*
+                               SOLUTION
+ *)
+
 (* Objective: This lab practices concepts of modules, including files
 as modules, signatures, and polymorphic abstract data types.
 
@@ -55,19 +59,31 @@ IEEE Floating Point standard described at
 temporary value pending your putting in appropriate ones.)
 ......................................................................*)
 
+(* Most of the pertinent math functions are already available in the
+`Stdlib` module
+<https://caml.inria.fr/pub/docs/manual-ocaml/libref/Stdlib.html>.
+We can just use them here. And since functions are first-class values
+in OCaml, you don't need to replicate the argument structure in the
+definitions. For example, there's no need for
+
+    let cos x = cos x     .
+
+The only function not already available is `max`; we generated a simple
+implementation using a partially applied fold on non-empty lists.
+Within `max`, we call `List.fold_left` on the `max` function from the
+`Stdlib` module to update the accumulator each time a value in the
+list is greater than the previous maximum value. *)
+
 module Math : MATH =
   struct
-    let pi = 3.1416
-    let cos x = cos x
-    let sin x = sin x
-    let sum a b = a +. b
-    let rec max lst = match lst with
-                  | [] -> None
-                  | h :: t -> let tl = (match max t with
-                                | None -> Float.min_float 
-                                | Some x -> x 
-
-                                 ) in if h > tl then Some h else Some tl
+    let pi = 3.14159
+    let cos = cos
+    let sin = sin
+    let sum = (+.)
+    let max lst =
+      match lst with
+      | [] -> None
+      | hd :: tl -> Some (List.fold_left max hd tl)
   end ;;
 
 (*......................................................................
@@ -85,5 +101,8 @@ Exercise 1C: Reimplement the computation from 1B above, now as
 in a more succinct manner.
 ......................................................................*)
 
+let result_local_open =
+  let open Math in
+  max [cos pi; sin pi] ;;
 
-let result_local_open = let open Math in max [cos pi; sin pi] ;;
+(* Isn't the version with the local open more readable?! *)
